@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { Task, TaskStatus } from "./task.model";
+import { OrderOptions, Task, TaskStatus } from "./task.model";
+import { GetTasksQueryDto } from "./dto/gettasksquery.dto";
+import { orderByStatus, orderByTitle } from "../helpers/orderBy";
 
 @Injectable()
 export class TasksService {
@@ -36,9 +38,28 @@ export class TasksService {
     },
   ];
 
-  getFilteredTasks(
-    status?: TaskStatus,
-    page?: number,
-    limit?: number,
-  ): Task[] {}
+  public getFilteredTasks(queryParams: GetTasksQueryDto): Task[] {
+    const {
+      status,
+      page = 1,
+      limit = Number.MAX_SAFE_INTEGER,
+      orderBy
+    } = queryParams;
+
+    let filteredTasks = [...this.tasks];
+
+    if (status) {
+      filteredTasks = filteredTasks.filter((task) => task.status === status);
+    }
+
+    filteredTasks = filteredTasks.slice((page - 1) * limit, page * limit);
+
+    if (orderBy === OrderOptions.TITLE) {
+      filteredTasks = orderByTitle(filteredTasks);
+    } else if (orderBy === OrderOptions.STATUS) {
+      filteredTasks = orderByStatus(filteredTasks);
+    }
+
+    return filteredTasks;
+  }
 }

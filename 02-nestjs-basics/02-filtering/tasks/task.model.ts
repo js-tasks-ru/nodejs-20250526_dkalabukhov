@@ -4,6 +4,11 @@ export enum TaskStatus {
   COMPLETED = "completed",
 }
 
+export enum OrderOptions {
+  TITLE = 'title',
+  STATUS = 'status',
+}
+
 export interface Task {
   id?: string;
   title: string;
