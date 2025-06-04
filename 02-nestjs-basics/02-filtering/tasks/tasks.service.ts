@@ -42,8 +42,8 @@ export class TasksService {
     const {
       status,
       page = 1,
-      limit = Number.MAX_SAFE_INTEGER,
-      orderBy
+      limit = 20,
+      orderBy,
     } = queryParams;
 
     let filteredTasks = [...this.tasks];
@@ -52,13 +52,16 @@ export class TasksService {
       filteredTasks = filteredTasks.filter((task) => task.status === status);
     }
 
-    filteredTasks = filteredTasks.slice((page - 1) * limit, page * limit);
-
-    if (orderBy === OrderOptions.TITLE) {
-      filteredTasks = orderByTitle(filteredTasks);
-    } else if (orderBy === OrderOptions.STATUS) {
-      filteredTasks = orderByStatus(filteredTasks);
+    switch(orderBy) {
+      case OrderOptions.TITLE:
+        filteredTasks = orderByTitle(filteredTasks);
+        break;
+      case OrderOptions.STATUS:
+        filteredTasks = orderByStatus(filteredTasks);
+        break;
     }
+
+    filteredTasks = filteredTasks.slice((page - 1) * limit, page * limit);
 
     return filteredTasks;
   }
