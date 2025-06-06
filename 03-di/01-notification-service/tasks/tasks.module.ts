@@ -5,9 +5,16 @@ import { NotificationsModule } from "../notifications/notifications.module";
 import { NotificationsService } from "../notifications/notifications.service";
 import { UsersModule } from "../users/users.module";
 import { UsersService } from "../users/users.service";
+import { emailSender, smsSender } from "../config/notification.config";
 
 @Module({
-  imports: [NotificationsModule, UsersModule],
+  imports: [
+    NotificationsModule.forRoot(
+      new emailSender(),
+      new smsSender(),
+    ),
+    UsersModule,
+  ],
   controllers: [TasksController],
   providers: [TasksService, NotificationsService, UsersService],
 })

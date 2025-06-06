@@ -6,6 +6,7 @@ export class UsersService {
   private users: User[] = [
     { id: 1, name: "User1", email: "user1@mail.com", phone: "+123456789" },
     { id: 2, name: "User2", email: "user2@mail.com", phone: "+987654321" },
+    { id: 3, name: "User2", email: "user2@mail.com", phone: "" },
   ];
 
   getUserById(id: number) {
