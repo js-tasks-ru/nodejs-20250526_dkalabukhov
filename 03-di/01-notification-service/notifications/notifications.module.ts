@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from "@nestjs/common";
 import { NotificationsService } from "./notifications.service";
 import { SenderEmail, SmsGateway } from "./notifications.model";
-import { JsonFileLoggerModule } from "json-file-logger/json-file-logger.module";
+import { JsonFileLoggerModule } from "../json-file-logger/json-file-logger.module";
 
 @Module({})
 export class NotificationsModule {

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { SmsGateway, SenderEmail } from "./notifications.model";
-import { JsonFileLoggerService } from "json-file-logger/json-file-logger.service.";
+import { JsonFileLoggerService } from "../json-file-logger/json-file-logger.service.";
 
 @Injectable()
 export class NotificationsService {
