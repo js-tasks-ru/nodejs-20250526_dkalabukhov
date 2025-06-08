@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTaskDto, Task, TaskStatus, TaskSubject, UpdateTaskDto } from "./task.model";
 import { NotificationsService } from "../notifications/notifications.service";
 import { UsersService } from "../users/users.service";
@@ -12,21 +12,8 @@ export class TasksService {
     private readonly usersService: UsersService,
   ) {}
 
-  private throwIfIncorrectUser(id: number) {
-    const user = this.usersService.getUserById(id);
-    if (!user.email || user.email.trim() === '') {
-      throw new BadRequestException('Email is required');
-    }
-
-    if (!user.phone || user.phone.trim() === '') {
-      throw new BadRequestException('Phone is required');
-    }
-  }
-
   async createTask(createTaskDto: CreateTaskDto) {
     const { title, description, assignedTo } = createTaskDto;
-
-    this.throwIfIncorrectUser(assignedTo);
 
     await this.notificationsService.sendEmail(
       this.usersService.getUserById(assignedTo).email,
@@ -54,8 +41,6 @@ export class TasksService {
     if (!task) {
       throw new NotFoundException(`Задача с ID ${id} не найдена`);
     }
-
-    this.throwIfIncorrectUser(task.assignedTo);
 
     await this.notificationsService.sendSMS(
       this.usersService.getUserById(task.assignedTo).phone,
