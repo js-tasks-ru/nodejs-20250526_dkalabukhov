@@ -9,13 +9,45 @@ import { Model, ObjectId } from "mongoose";
 export class TasksService {
   constructor(@InjectModel(Task.name) private TaskModel: Model<Task>) {}
 
-  create(createTaskDto: CreateTaskDto) {}
+  async create(createTaskDto: CreateTaskDto) {
+    return await this.TaskModel.create(createTaskDto);
+  }
 
-  async findAll() {}
+  async findAll() {
+    return await this.TaskModel.find();
+  }
 
-  async findOne(id: ObjectId) {}
+  async findOne(id: ObjectId) {
+    const task = await this.TaskModel.findById(id);
 
-  async update(id: ObjectId, updateTaskDto: UpdateTaskDto) {}
+    if (!task) {
+      throw new NotFoundException(`Задача с ID ${id} не найдена`);
+    }
 
-  async remove(id: ObjectId) {}
+    return task;
+  }
+
+  async update(id: ObjectId, updateTaskDto: UpdateTaskDto) {
+    const { ...rest } = updateTaskDto;
+    const updatedTask = await this.TaskModel.findByIdAndUpdate(id, rest, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedTask) {
+      throw new NotFoundException(`Задача с ID ${id} не найдена`);
+    }
+
+    return updatedTask;
+  }
+
+  async remove(id: ObjectId) {
+    const task = await this.TaskModel.exists({_id: id});
+
+    if (!task) {
+      throw new NotFoundException(`Задача с ID ${id} не найдена`);
+    }
+
+    return await this.TaskModel.findByIdAndDelete(id);
+  }
 }
